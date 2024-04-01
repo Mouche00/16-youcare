@@ -268,17 +268,15 @@ class ListingController extends Controller
     public function listingRequest()
     {
         $user = JWTAuth::user();
-        // $organizer = Organizer::where('user_id', $user->id)->first();
-        // $posits = DB::table('posits')
-        //     ->join('listings', 'posits.listing_id', '=', 'listings.id')
-        //     ->join('volunteers', 'posits.volunteer_id', '=', 'volunteers.id')
-        //     ->join('users', 'volunteers.user_id', '=', 'users.id')
-        //     ->where('listings.organizer_id', $organizer->id)
-        //     ->where('posits.status', 'pending')
-        //     ->select('posits.*', 'posits.id as posit_id', 'listings.*', 'volunteers.*', 'users.*')
-        //     ->first();
-        $posits = $user->organizer()->first()->listings()->get();
-        return response()->json($posits);
+        $applications = DB::table('applications')
+            ->join('listings', 'applications.listing_id', '=', 'listings.id')
+            ->join('volunteers', 'applications.volunteer_id', '=', 'volunteers.id')
+            ->join('users', 'volunteers.user_id', '=', 'users.id')
+            ->where('listings.organizer_id', $user->organizer()->first()->id)
+            ->where('applications.status', 'pending')
+            ->select('applications.*', 'applications.id as application_id', 'listings.*', 'volunteers.*', 'users.*')
+            ->get();
+        return response()->json($applications);
     }
 
        /**
