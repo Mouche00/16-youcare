@@ -13,11 +13,11 @@ class Listing extends Model
         'description',
         'date',
         'location',
-        'competences',
+        'skills',
         'organizer_id'
     ];
     protected $casts = [
-        'competences' => 'json'
+        'skills' => 'json'
     ];
     public function organizer() {
         return $this->belongsTo(Organizer::class , 'organizer_id');

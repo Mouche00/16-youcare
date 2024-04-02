@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->json('competences');
+            $table->json('skills');
             $table->date('date');
             $table->string('location');
             $table->foreignId('organizer_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();

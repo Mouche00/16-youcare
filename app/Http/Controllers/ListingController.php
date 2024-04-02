@@ -78,9 +78,9 @@ class ListingController extends Controller
      *          @OA\Schema(type="string")
      *      ),
      *      @OA\Parameter(
-     *          name="competences",
+     *          name="skills",
      *          in="query",
-     *          description="Listing's competences",
+     *          description="Listing's skills",
      *          required=true,
      *          @OA\Schema(type="json")
      *      ),
@@ -118,7 +118,7 @@ class ListingController extends Controller
             'description' => 'required|string|max:255',
             'date' => 'required|date',
             'location' => 'required|string|max:255',
-            'competences' => 'required|array'
+            'skills' => 'required|array'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -130,7 +130,7 @@ class ListingController extends Controller
         $listing = Listing::create(array_merge($request->all(), [
             'organizer_id' => $user->organizer()->first()->id
         ]));
-        return response()->json(['listing' => $listing, 'message' => 'Annonce Added Succefully'], 201);
+        return response()->json(['listing' => $listing, 'message' => 'Listing Added Succefully'], 201);
     }
 
     /**
@@ -173,9 +173,9 @@ class ListingController extends Controller
      *          @OA\Schema(type="string")
      *      ),
      *      @OA\Parameter(
-     *          name="competences",
+     *          name="skills",
      *          in="query",
-     *          description="Listing's competences",
+     *          description="Listing's skills",
      *          @OA\Schema(type="json")
      *      ),
      *   @OA\Response(
@@ -212,7 +212,7 @@ class ListingController extends Controller
             'description' => 'string|max:255',
             'date' => 'date',
             'location' => 'string|max:255',
-            'competences' => 'array'
+            'skills' => 'array'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -220,7 +220,7 @@ class ListingController extends Controller
         }
         $listing->update($request->all());
 
-        return response()->json(['listing' => $listing, 'message' => 'Annonce updated Succefully'], 200);
+        return response()->json(['listing' => $listing, 'message' => 'Listing updated Succefully'], 200);
     }
 
     /**
@@ -367,6 +367,6 @@ class ListingController extends Controller
     {
         //
         $listing->delete();
-        return response()->json(['listing' => $listing, 'message' => 'Annonce Deleted Succefully'], 200);
+        return response()->json(['listing' => $listing, 'message' => 'Listing Deleted Succefully'], 200);
     }
 }
