@@ -20,7 +20,7 @@ class ListingFactory extends Factory
             //
             'title' => fake()->title(),
             'description' => fake()->sentence(2),
-            'competences' => [
+            'skills' => [
                 fake()->title(),
                 fake()->title(),
                 fake()->title(),
