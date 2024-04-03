@@ -218,7 +218,18 @@ class ListingController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $listing->update($request->all());
+        
+        $organizer = JWTAuth::user()->organizer()->first();
+        $listing = $organizer->listings()->find($listing->id);
+
+        if( ! $listing == null) {
+            $listing->update($request->all());
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized action'
+            ], 403);
+        }
 
         return response()->json(['listing' => $listing, 'message' => 'Listing updated Succefully'], 200);
     }
