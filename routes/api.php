@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VolunteerController;
 use App\Models\Listing;
 use Illuminate\Http\Request;
@@ -34,6 +35,7 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
         Route::get('user', 'getUser');
+        Route::put('user/update', [UserController::class, 'update']);
     });
 
     Route::post('login', 'login');

@@ -34,11 +34,11 @@ class ListingController extends Controller
     public function index(Request $request)
     {
         //
-        $listings = Listing::all();
+        $listings = Listing::latest()->paginate(6);
         if ($request->input('query')) {
             $listings = Listing::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($request->input('query')) . '%'])
                 ->orWhereRaw('LOWER(location) LIKE ?', ['%' . strtolower($request->input('query')) . '%'])
-                ->get();
+                ->paginate(6);
         }
         return response()->json(['listings' => $listings], 200);
     }
