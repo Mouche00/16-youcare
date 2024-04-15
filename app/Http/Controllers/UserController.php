@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -10,8 +11,10 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
+        $user = JWTAuth::user();
+
         $rules = [
             'name' => 'string|max:255',
             'email' => ['email', 'max:255', Rule::unique('users', 'email')->ignore($user)],
@@ -30,7 +33,6 @@ class UserController extends Controller
             ]
         );
 
-        $user = JWTAuth::user();
         $user->update($data);
 
         return response()->json(['user' => $user, 'message' => 'User updated successfully'], 200);

@@ -33,14 +33,52 @@ class ListingController extends Controller
     
     public function index(Request $request)
     {
-        //
-        $listings = Listing::latest()->paginate(6);
-        if ($request->input('query')) {
-            $listings = Listing::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($request->input('query')) . '%'])
-                ->orWhereRaw('LOWER(location) LIKE ?', ['%' . strtolower($request->input('query')) . '%'])
-                ->paginate(6);
+        $listings = null;
+        try{
+            if(JWTAuth::user() !== null) {
+                $userId = JWTAuth::user()->id;
+                $listings = Listing::latest()->whereHas('volunteer', function($q) use ($userId){
+                    return $q->where('volunteers.id', '=', $userId);
+                })->orDoesntHave('volunteer')->paginate(6);
+            } else {
+                $listings = Listing::latest()->paginate(6);
+            }
+
+            if ($request->input('query')) {
+                $listings = Listing::whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($request->input('query')) . '%'])
+                    ->orWhereRaw('LOWER(location) LIKE ?', ['%' . strtolower($request->input('query')) . '%'])
+                    ->paginate(6);
+            }
+            return response()->json(['listings' => $listings], 200);
         }
-        return response()->json(['listings' => $listings], 200);
+        catch(\Exception $e){
+            return response()->json([
+                'case' => 'failed',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function myListings()
+    {
+        try{
+            $user = JWTAuth::user();
+            $listings = Listing::where('organizer_id',$user->organizer()->first()->id)
+                ->get();
+
+            return response()->json([
+                'case' => 'success',
+                'listings' => $listings
+            ]);
+
+        }
+        catch(\Exception $e){
+            return response()->json([
+               'case' => 'failed',
+               'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
     /**
@@ -328,7 +366,8 @@ class ListingController extends Controller
         $posit = DB::table('applications')
             ->where('id', $request->application_id)
             ->update(['status' => 'approved']);
-        return response()->json(['posit_id' => $posit, 'message' => 'The application has been successfully approved.']);
+
+        return response()->json(['posit_id' => $posit, 'message' => 'The application has been successfully approved.'], 201);
     }
 
     /**

@@ -53,6 +53,7 @@ Route::controller(ListingController::class)->group(function () {
         Route::delete('listings/{listing}', 'destroy');
         Route::put('approve', 'approve');
         Route::put('decline', 'decline');
+        Route::get('organizer/listings','myListings');
     });
     Route::get('listings', 'index');
     Route::get('listings/{listing}', 'show');
@@ -64,6 +65,7 @@ Route::group([],function() {
         Route::middleware('can:volunteer')->group(function () {
             Route::post('apply', 'apply');
         });
+
     });
     Route::controller(VolunteerController::class)->group(function () {
         Route::middleware('can:volunteer')->group(function () {
